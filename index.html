@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Табло — Прогнозы &amp; результаты</title>
+<link rel="icon" type="image/png" href="/hockey-tablo/brand/avatar-192.png">
+<link rel="apple-touch-icon" href="/hockey-tablo/brand/avatar-192.png">
+<link rel="stylesheet" href="/hockey-tablo/fonts/fonts.css">
+<link rel="stylesheet" href="/hockey-tablo/style.css">
+<script src="/hockey-tablo/js/tg-loader.js"></script>
+</head>
+<body>
+<div class="app" id="app">
+  <header class="phead">
+    <div class="brand">
+      <div class="logo">
+        <div class="flaps" role="img" aria-label="Табло"><span class="flap" aria-hidden="true">Т</span><span class="flap" aria-hidden="true">А</span><span class="flap" aria-hidden="true">Б</span><span class="flap" aria-hidden="true">Л</span><span class="flap" aria-hidden="true">О</span></div>
+        <div class="tagline">Прогнозы &amp; результаты</div>
+      </div>
+      <div class="bank">
+        <span class="puck-bal" title="Шайбы на этот тур"><span class="puck"></span><span id="bal">—</span></span>
+        <div class="sub" id="subline">Загрузка…</div>
+      </div>
+    </div>
+    <div class="subrow">
+      <button type="button" class="rules-btn" id="statsBtn" hidden>Статистика</button>
+      <button type="button" class="rules-btn" id="teamsBtn" hidden>Мои команды</button>
+      <button type="button" class="rules-btn" id="rulesBtn">Правила игры</button>
+      <button type="button" class="rules-btn" id="logoutBtn" hidden>Выйти</button>
+    </div>
+  </header>
+  <div id="toast" class="toast" role="status" hidden></div>
+  <main id="main"></main>
+  <footer class="made"><a href="https://tablo.5-35-125-152.sslip.io/fairplay/" id="fairplayLink">Фейр-плей статистика</a></footer>
+  <nav class="nav" id="nav" role="tablist" aria-label="Разделы" hidden>
+    <button type="button" role="tab" data-sc="home" aria-selected="true"><span class="ic">▦</span>Табло</button>
+    <button type="button" role="tab" data-sc="mine" aria-selected="false"><span class="ic">◉</span>Броски</button>
+    <button type="button" role="tab" data-sc="table" aria-selected="false"><span class="ic">≡</span>Таблица</button>
+    <button type="button" role="tab" data-sc="rating" aria-selected="false"><span class="ic">★</span>Рейтинг</button>
+    <button type="button" role="tab" data-sc="tribune" aria-selected="false"><span class="ic">▲</span>Трибуна</button>
+  </nav>
+</div>
+<script type="module" src="/hockey-tablo/js/app.js"></script>
+</body>
+</html>
