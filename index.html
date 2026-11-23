@@ -32,8 +32,16 @@
     </div>
   </header>
   <div id="toast" class="toast" role="status" hidden></div>
-  <main id="main"></main>
-  <footer class="made"><a href="https://tablo.5-35-125-152.sslip.io/fairplay/" id="fairplayLink">Фейр-плей статистика</a></footer>
+  <main id="main">
+    <!-- Виден сразу, ещё до загрузки скриптов: приложение заменяет его своим содержимым. Подсказка про медленную связь появляется сама через 7 секунд (только CSS). -->
+    <div class="boot" role="status" aria-live="polite">
+      <div class="spin" aria-hidden="true"></div>
+      <p class="boot-t">Загружаем «Табло»…</p>
+      <p class="boot-s">Связь сегодня медленная, но всё работает. Подождите ещё немного, не закрывайте.</p>
+      <noscript><p class="boot-s boot-now">Для работы нужен включённый JavaScript.</p></noscript>
+    </div>
+  </main>
+  <footer class="made"><a href="https://tablo.kids-hockey.online/fairplay/" id="fairplayLink">Фейр-плей статистика</a></footer>
   <nav class="nav" id="nav" role="tablist" aria-label="Разделы" hidden>
     <button type="button" role="tab" data-sc="home" aria-selected="true"><span class="ic">▦</span>Табло</button>
     <button type="button" role="tab" data-sc="mine" aria-selected="false"><span class="ic">◉</span>Броски</button>

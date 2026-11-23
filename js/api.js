@@ -68,7 +68,7 @@ export function syncClock(iso) {
 }
 
 /** Копия сайта на GitHub Pages: страницы там, а сервер (вход, броски, таблицы) на нашем адресе. Остальные адреса ходят на свой сервер. */
-const API_BASE = location.hostname.endsWith(".github.io") ? "https://tablo.5-35-125-152.sslip.io" : "";
+const API_BASE = location.hostname.endsWith(".github.io") ? "https://tablo.kids-hockey.online" : "";
 
 /** Возвращает { ok, status, data }. Сетевой сбой — status 0. */
 export async function api(path, opts = {}) {
@@ -76,22 +76,48 @@ export async function api(path, opts = {}) {
   const session = sessionToken();
   const headers = { Authorization: signed ? "tma " + signed : session ? "Bearer " + session : "tma ", ...(opts.headers || {}) };
   if (opts.body !== undefined) headers["Content-Type"] = "application/json";
+  const method = opts.method || (opts.body !== undefined ? "POST" : "GET");
+  busy(1);
   try {
-    const res = await fetch(API_BASE + path, {
-      method: opts.method || (opts.body !== undefined ? "POST" : "GET"),
-      headers,
-      body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined,
-    });
-    let data = null;
-    try {
-      data = await res.json();
-    } catch {
-      /* пустое тело */
+    // Чтение (GET) при обрыве связи пробуем ещё раз: повтор безопасен. Отправку (бросок, вход) не повторяем: она могла дойти.
+    for (let attempt = 0; ; attempt++) {
+      try {
+        const res = await fetch(API_BASE + path, {
+          method,
+          headers,
+          body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined,
+          signal: AbortSignal.timeout(25000),
+        });
+        let data = null;
+        try {
+          data = await res.json();
+        } catch {
+          /* пустое тело */
+        }
+        if (data && data.now) syncClock(data.now);
+        return { ok: res.ok, status: res.status, data };
+      } catch (err) {
+        if (method !== "GET" || attempt >= 1) throw err;
+        await new Promise((r) => setTimeout(r, 800));
+      }
     }
-    if (data && data.now) syncClock(data.now);
-    return { ok: res.ok, status: res.status, data };
   } catch {
     return { ok: false, status: 0, data: { error: "network", message: "Нет связи. Проверьте интернет." } };
+  } finally {
+    busy(-1);
+  }
+}
+
+/** Тонкая полоска сверху, пока ждём сервер дольше 0,6 с: человек видит, что приложение работает. */
+let inflight = 0;
+let busyTimer = 0;
+function busy(delta) {
+  inflight = Math.max(0, inflight + delta);
+  if (inflight > 0 && !busyTimer) busyTimer = setTimeout(() => document.body.classList.add("busy"), 600);
+  if (inflight === 0) {
+    clearTimeout(busyTimer);
+    busyTimer = 0;
+    document.body.classList.remove("busy");
   }
 }
 
