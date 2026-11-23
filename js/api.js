@@ -68,7 +68,7 @@ export function syncClock(iso) {
 }
 
 /** Копия сайта на GitHub Pages: страницы там, а сервер (вход, броски, таблицы) на нашем адресе. Остальные адреса ходят на свой сервер. */
-const API_BASE = location.hostname.endsWith(".github.io") ? "https://tablo.kids-hockey.online" : "";
+const API_BASE = location.hostname.endsWith(".github.io") ? "https://statuesque-faloodeh-859fe0.netlify.app" : "";
 
 /** Возвращает { ok, status, data }. Сетевой сбой — status 0. */
 export async function api(path, opts = {}) {
