@@ -97,10 +97,32 @@ function fatal(text) {
   document.getElementById("subline").textContent = "Нет доступа";
 }
 
+/** Шапка и нижняя полоса Телеграма красятся в цвет приложения: иначе крестик и «⋯» на белых кружках сливаются с фоном. */
+function hexOf(css) {
+  const m = /rgba?\((\d+),\s*(\d+),\s*(\d+)/.exec(css);
+  return m ? "#" + [m[1], m[2], m[3]].map((n) => Number(n).toString(16).padStart(2, "0")).join("") : "";
+}
+function paintTelegramChrome() {
+  if (!telegram) return;
+  try {
+    const bg = hexOf(getComputedStyle(document.body).backgroundColor);
+    const app = document.querySelector(".app");
+    const panel = app ? hexOf(getComputedStyle(app).backgroundColor) : "";
+    if (bg && telegram.setHeaderColor) telegram.setHeaderColor(bg);
+    if (bg && telegram.setBackgroundColor) telegram.setBackgroundColor(bg);
+    if ((panel || bg) && telegram.setBottomBarColor) telegram.setBottomBarColor(panel || bg);
+  } catch {
+    /* старый клиент Телеграма: останутся цвета по умолчанию */
+  }
+}
+
 async function boot() {
   if (telegram) {
     telegram.ready();
     telegram.expand();
+    paintTelegramChrome();
+    if (window.matchMedia) window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", paintTelegramChrome);
+    if (telegram.onEvent) telegram.onEvent("themeChanged", paintTelegramChrome);
   }
   // Вне Телеграма (обычный браузер): нужен вход через бота. Внутри Телеграма всё как раньше, по подписи.
   if (!initData() && !sessionToken()) return showLogin();
